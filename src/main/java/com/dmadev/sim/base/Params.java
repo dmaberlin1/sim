@@ -13,6 +13,7 @@ public enum Params {
     MAP_HEIGHT("MapHeight",9),
     MAP_WIDTH("MapHeight",9);
 
+
     private final String name;
     private final int value;
 }

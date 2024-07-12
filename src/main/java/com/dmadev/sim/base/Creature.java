@@ -32,8 +32,8 @@ public abstract class Creature extends Entity {
         health = Math.min(health + 16, maxHealth);
     }
 
-    public Creature(Coordinates coordinates) {
-        super(coordinates);
+    public Creature(EntityType type,Coordinates coordinates) {
+        super(type,coordinates);
         if (this instanceof Predator) {
             victim = Herbivore.class;
             speed = Params.PREDATOR_SPEED.getValue();

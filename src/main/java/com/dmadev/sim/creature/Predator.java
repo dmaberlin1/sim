@@ -1,6 +1,7 @@
 package com.dmadev.sim.creature;
 
 import com.dmadev.sim.base.Creature;
+import com.dmadev.sim.base.EntityType;
 import com.dmadev.sim.map.Coordinates;
 import com.dmadev.sim.map.GameMap;
 
@@ -10,7 +11,7 @@ public final class Predator extends Creature {
     private  final int power;
 
     public Predator(Coordinates coordinates,int power) {
-        super(coordinates);
+        super(EntityType.PREDATOR,coordinates);
         this.power=power;
     }
 

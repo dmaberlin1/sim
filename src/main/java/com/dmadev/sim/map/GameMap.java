@@ -49,37 +49,29 @@ public class GameMap {
             Coordinates coordinates = new Coordinates(
                     random.nextInt(MAP_HEIGHT + 1),
                     random.nextInt(MAP_WIDTH + 1));
-            if(isPlaceEmpty(coordinates)){
+            if (isPlaceEmpty(coordinates)) {
                 return coordinates;
             }
         }
     }
 
     // Возвращает всех сущностей указанного типа на карте
-        public <T> HashMap<Coordinates,T>getEntitiesOfType(Class<T> typeEntity){
+    public <T> HashMap<Coordinates, T> getEntitiesOfType(Class<T> typeEntity) {
 
         //Проходим по всем сущностям на карте
-       return entities.entrySet().stream()
-               // Фильтрует записи, оставляя только те, где значение является экземпляром указанного типа
-               .filter(entry->typeEntity.isInstance(entry.getValue()))
-               .collect(Collectors.toMap(
-                       // Использует ключ (координаты) как ключ в результирующей карте
-                       Map.Entry::getKey,
-                       // Преобразует значение записи в указанный тип и использует его как значение в результирующей карте
-                       entry->typeEntity.cast(entry.getValue()),
-                       // Разрешает конфликты ключей путем выбора первого значения (в данном случае конфликты маловероятны)
-                       (e1,e2)->e1,
-                       // Указывает, что результат должен быть HashMap
-                       HashMap::new
-                       ));
-        }
-
-
+        return entities.entrySet().stream()
+                // Фильтрует записи, оставляя только те, где значение является экземпляром указанного типа
+                .filter(entry -> typeEntity.isInstance(entry.getValue()))
+                .collect(Collectors.toMap(
+                        // Использует ключ (координаты) как ключ в результирующей карте
+                        Map.Entry::getKey,
+                        // Преобразует значение записи в указанный тип и использует его как значение в результирующей карте
+                        entry -> typeEntity.cast(entry.getValue()),
+                        // Разрешает конфликты ключей путем выбора первого значения (в данном случае конфликты маловероятны)
+                        (e1, e2) -> e1,
+                        // Указывает, что результат должен быть HashMap
+                        HashMap::new));
+    }
 
     //eof
 }
-    /*
-    Карта, содержит в себе коллекцию для хранения существ и их расположения.
-    Советую не спешить использовать двумерный массив или список списков,
-    а подумать какие ещё коллекции могут подойти.
-     */

@@ -1,16 +1,13 @@
 package com.dmadev.sim.creature;
 
 import com.dmadev.sim.base.Creature;
+import com.dmadev.sim.base.EntityType;
 import com.dmadev.sim.map.Coordinates;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
-
 
 
 public final class Herbivore extends Creature {
     public Herbivore(Coordinates coordinates) {
-        super(coordinates);
+        super(EntityType.HERBIVORE, coordinates);
     }
 
 
