@@ -7,4 +7,6 @@ public class Coordinates {
     private final int y;
     private final int x;
 
+
+
 }

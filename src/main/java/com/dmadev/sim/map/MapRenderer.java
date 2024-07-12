@@ -13,21 +13,23 @@ public class MapRenderer {
 
 
     public void render(GameMap gameMap) {
-        // Итерируемся по высоте карты от верха к низу
-        IntStream.rangeClosed(0, gameMap.MAP_HEIGHT)
+        //Используем IntStream.rangeClosed для итерации по высоте карты от 0 до MAP_HEIGHT.
+        IntStream.rangeClosed(0, GameMap.MAP_HEIGHT)
                 .forEach(height -> {
-                    String line = IntStream.rangeClosed(0, gameMap.MAP_WIDTH)
+                    // Формируем строку для текущей высоты карты. От 0 до MAP_WIDTH
+                    String line = IntStream.rangeClosed(0, GameMap.MAP_WIDTH)
                             .mapToObj(weight -> {
+                                // Создаем объект координат для текущих координат height и width
                                 Coordinates coordinates = new Coordinates(height, weight);
-                                // Выводим иконку для пустого места или сущности
+                                // Получаем иконку для пустого места или сущности на данных координатах
                                 return gameMap.isPlaceEmpty(coordinates) ?
                                         getIconForEmptySquare() :
                                         getEntityIcon(gameMap.getEntity(coordinates));
                             })
-                            .collect(Collectors.joining())+RESET_BACKGROUND;
+                            // Объединяем все полученные иконки в одну строку и добавляем сброс фона
+                            .collect(Collectors.joining()) + RESET_BACKGROUND;
                     System.out.println(line);
                 });
-
 
     }
 

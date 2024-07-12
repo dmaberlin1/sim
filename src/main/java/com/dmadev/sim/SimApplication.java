@@ -10,8 +10,6 @@ public class SimApplication {
         SpringApplication.run(SimApplication.class, args);
 
 
-
-
     }
 
 }
