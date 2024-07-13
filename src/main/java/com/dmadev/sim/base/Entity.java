@@ -1,6 +1,7 @@
 package com.dmadev.sim.base;
 
-import com.dmadev.sim.map.Coordinates;
+import com.dmadev.sim.constants.EntityType;
+import com.dmadev.sim.gameMap.Coordinates;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

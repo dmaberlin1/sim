@@ -2,13 +2,13 @@ package com.dmadev.sim.tools;
 
 import com.dmadev.sim.base.Creature;
 import com.dmadev.sim.base.Entity;
-import com.dmadev.sim.base.Params;
+import com.dmadev.sim.constants.Params;
 import com.dmadev.sim.creature.Herbivore;
 import com.dmadev.sim.creature.Predator;
-import com.dmadev.sim.map.Coordinates;
-import com.dmadev.sim.map.GameMap;
-import com.dmadev.sim.nature.Grass;
-import com.dmadev.sim.nature.Rock;
+import com.dmadev.sim.gameMap.Coordinates;
+import com.dmadev.sim.gameMap.GameMap;
+import com.dmadev.sim.creature.nature.Grass;
+import com.dmadev.sim.creature.nature.Rock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,34 +27,52 @@ public class BFS {
     static Class<? extends Entity> victim;
 
 
-    // Основной метод для нахождения кратчайшего пути до целевой сущности
+    /**
+     * Основной метод для нахождения кратчайшего пути до целевой сущности.
+     *
+     * @param startNode начальная точка поиска
+     * @param gameMap   игровая карта, на которой выполняется поиск
+     * @param victim    класс целевой сущности для поиска
+     * @return список координат пути от startNode до найденной целевой сущности
+     */
     public static List<Coordinates> get(Coordinates startNode, GameMap gameMap, Class<? extends Entity> victim) {
-        // Устанавливаем целевую сущность для поиска
         BFS.victim = victim;
         return findShortPathToResult(startNode, gameMap);
     }
 
+    /**
+     * Приватный метод для выполнения поиска в ширину до найденной целевой сущности.
+     *
+     * @param startNode начальная точка поиска
+     * @param gameMap   игровая карта, на которой выполняется поиск
+     * @return координаты узла с найденной целевой сущностью или null, если не найдено
+     */
     private static List<Coordinates> findShortPathToResult(Coordinates startNode, GameMap gameMap) {
-        // Очередь для обхода узлов
         Queue<Coordinates> queue = new LinkedList<>();
-        // Карта для хранения родительских узлов
         Map<Coordinates, Coordinates> parentMap = new HashMap<>();
-        // Множество для отслеживания посещенных узлов
         Set<Coordinates> visitedSet = new HashSet<>();
-        // Узел, содержащий целевую сущность
         Coordinates resultNode = null;
 
-        // Запускаем обход в ширину
         queue.add(startNode);
         resultNode = breadthFirstSearch(queue, parentMap, visitedSet, gameMap);
 
-        // Строим путь от целевого узла к начальному узлу
         return buildPath(resultNode, parentMap);
     }
 
-    private static Coordinates breadthFirstSearch(Queue<Coordinates> queue, Map<Coordinates, Coordinates> parentMap,
-                                                  Set<Coordinates> visitedSet, GameMap gameMap) {
-
+    /**
+     * Приватный метод для выполнения обхода в ширину на игровой карте.
+     *
+     * @param queue      очередь для обхода узлов
+     * @param parentMap  карта для хранения родительских узлов
+     * @param visitedSet множество для отслеживания посещенных узлов
+     * @param gameMap    игровая карта, на которой выполняется поиск
+     * @return координаты узла с найденной целевой сущностью или null, если не найдено
+     */
+    private static Coordinates breadthFirstSearch(Queue<Coordinates> queue,
+                                                  Map<Coordinates,
+                                                          Coordinates> parentMap,
+                                                  Set<Coordinates> visitedSet,
+                                                  GameMap gameMap) {
 
         while (!queue.isEmpty()) {
             Coordinates current = queue.remove();
@@ -70,6 +88,15 @@ public class BFS {
     }
 
 
+    /**
+     * Приватный метод для обработки соседних узлов игровой карты.
+     *
+     * @param queue      очередь для обхода узлов
+     * @param parentMap  карта для хранения родительских узлов
+     * @param visitedSet множество для отслеживания посещенных узлов
+     * @param gameMap    игровая карта, на которой выполняется поиск
+     * @param current    текущий узел
+     */
     private static void processNeighborNodes(Queue<Coordinates> queue, Map<Coordinates, Coordinates> parentMap, Set<Coordinates> visitedSet, GameMap gameMap, Coordinates current) {
         getNodesWithinBorders(current, gameMap).stream()
                 .filter(node -> !visitedSet.contains(node) && !queue.contains(node))
@@ -77,12 +104,29 @@ public class BFS {
                     processNeighborNode(queue, parentMap, visitedSet, node, current);
                 });
     }
+
+    /**
+     * Приватный метод для обработки конкретного соседнего узла игровой карты.
+     *
+     * @param queue      очередь для обхода узлов
+     * @param parentMap  карта для хранения родительских узлов
+     * @param visitedSet множество для отслеживания посещенных узлов
+     * @param node       текущий обрабатываемый узел
+     * @param current    текущий узел
+     */
     private static void processNeighborNode(Queue<Coordinates> queue, Map<Coordinates, Coordinates> parentMap, Set<Coordinates> visitedSet, Coordinates node, Coordinates current) {
         parentMap.put(node, current);
         queue.offer(node);
         visitedSet.add(node);
     }
 
+    /**
+     * Приватный метод для проверки текущего узла на наличие целевой сущности.
+     *
+     * @param current текущий узел для проверки
+     * @param gameMap игровая карта, на которой выполняется поиск
+     * @return найденный узел с целевой сущностью или null, если не найдено
+     */
     private static Coordinates checkAndReturnVictimNode(Coordinates current, GameMap gameMap) {
         if (isVictimNode(current, gameMap)) {
             return current;
@@ -90,9 +134,13 @@ public class BFS {
         return null;
     }
 
-
-
-
+    /**
+     * Приватный метод для построения пути от целевого узла к начальному узлу.
+     *
+     * @param resultNode найденный узел с целевой сущностью
+     * @param parentMap  карта для хранения родительских узлов
+     * @return список координат пути от целевого узла к начальному узлу
+     */
     private static List<Coordinates> buildPath(Coordinates resultNode, Map<Coordinates, Coordinates> parentMap) {
         List<Coordinates> path = new ArrayList<>();
 
@@ -105,60 +153,92 @@ public class BFS {
     }
 
 
-    // Метод для получения соседних узлов в пределах границ карты
+    /**
+     * Приватный метод для получения соседних узлов в пределах границ карты.
+     *
+     * @param current текущий узел, для которого находятся соседние узлы
+     * @param gameMap игровая карта, на которой выполняется поиск
+     * @return список соседних координатных узлов
+     */
     private static List<Coordinates> getNodesWithinBorders(Coordinates current, GameMap gameMap) {
-        int cordY = current.getY();
-        int cordX = current.getX();
-
-
+        int cordY = current.y();
+        int cordX = current.x();
         Predicate<Coordinates> isWithinBorders = coords -> isWithinVerticalBorders(coords) && isWithinHorizontalBorders(coords);
         Predicate<Coordinates> isNotBarrier = coords -> isNotABarrier(coords, gameMap);
 
-
-        // Генерируем и фильтруем соседние узлы в пределах границ карты
         return Arrays.stream(new Coordinates[]{
                         new Coordinates(cordY - 1, cordX), // Вверх
                         new Coordinates(cordY, cordX + 1), // Вправо
                         new Coordinates(cordY + 1, cordX), // Вниз
                         new Coordinates(cordY, cordX - 1)   // Влево
                 })
-                // Фильтруем узлы, оставляя только те, которые находятся в пределах карты и не являются барьерами
                 .filter(isWithinBorders.and(isNotBarrier))
                 .toList();
     }
 
 
+    /**
+     * Приватный метод для проверки, является ли текущий узел целевой сущностью.
+     *
+     * @param current текущий узел для проверки
+     * @param gameMap игровая карта, на которой выполняется поиск
+     * @return true, если текущий узел содержит целевую сущность, иначе false
+     */
     private static boolean isVictimNode(Coordinates current, GameMap gameMap) {
         return !gameMap.isPlaceEmpty(current) && gameMap.getEntity(current).getClass() == victim;
     }
 
 
+    /**
+     * Приватный метод для проверки, находится ли узел в вертикальных границах карты.
+     *
+     * @param coords координаты текущего узла
+     * @return true, если узел находится в вертикальных границах карты, иначе false
+     */
     private static boolean isWithinVerticalBorders(Coordinates coords) {
-        return coords.getY() >= 0 && coords.getY() <= Params.MAP_HEIGHT.getValue();
+        return coords.y() >= 0 && coords.y() <= Params.MAP_HEIGHT.getValue();
     }
 
+    /**
+     * Приватный метод для проверки, находится ли узел в горизонтальных границах карты.
+     *
+     * @param coords координаты текущего узла
+     * @return true, если узел находится в горизонтальных границах карты, иначе false
+     */
     private static boolean isWithinHorizontalBorders(Coordinates coords) {
-        return coords.getX() >= 0 && coords.getX() <= Params.MAP_WIDTH.getValue();
+        return coords.x() >= 0 && coords.x() <= Params.MAP_WIDTH.getValue();
     }
 
 
+    /**
+     * Приватный метод для проверки, является ли указанный узел барьером на игровой карте.
+     *
+     * @param coords  координаты текущего узла
+     * @param gameMap игровая карта, на которой выполняется проверка
+     * @return true, если узел не является барьером, иначе false
+     */
     private static boolean isNotABarrier(Coordinates coords, GameMap gameMap) {
-        // Получаем сущность по указанным координатам
         Entity entity = gameMap.getEntity(coords);
-        // Проверяем, является ли сущность барьером, исходя из типа victim
         return victim == Herbivore.class ? isNotHerbivoreBarrier(entity) : isNotGeneralBarrier(entity);
     }
 
-
-    // Метод для проверки, является ли сущность барьером для травоядных
+    /**
+     * Приватный метод для проверки, является ли сущность барьером для травоядных.
+     *
+     * @param entity сущность для проверки
+     * @return true, если сущность не является хищником, камнем или травой, иначе false
+     */
     private static boolean isNotHerbivoreBarrier(Entity entity) {
-        // Возвращаем true, если сущность не является хищником, камнем или травой
         return !(isPredator(entity) || isRock(entity) || isGrass(entity));
     }
 
-    // Метод для проверки, является ли сущность общим барьером
+    /**
+     * Приватный метод для проверки, является ли сущность общим барьером.
+     *
+     * @param entity сущность для проверки
+     * @return true, если сущность не является существом или камнем, иначе false
+     */
     private static boolean isNotGeneralBarrier(Entity entity) {
-        // Возвращаем true, если сущность не является существом или камнем
         return !(isCreature(entity) || isRock(entity));
     }
 
@@ -174,6 +254,7 @@ public class BFS {
     private static boolean isGrass(Entity entity) {
         return entity instanceof Grass;
     }
+
 
     private static boolean isCreature(Entity entity) {
         return entity instanceof Creature;

@@ -1,6 +1,5 @@
-package com.dmadev.sim.map;
+package com.dmadev.sim.constants;
 
-import com.dmadev.sim.base.EntityType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

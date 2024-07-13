@@ -1,4 +1,4 @@
-package com.dmadev.sim.base;
+package com.dmadev.sim.constants;
 
 public enum EntityType {
     ROCK,

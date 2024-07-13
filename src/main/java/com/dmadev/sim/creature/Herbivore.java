@@ -1,8 +1,8 @@
 package com.dmadev.sim.creature;
 
 import com.dmadev.sim.base.Creature;
-import com.dmadev.sim.base.EntityType;
-import com.dmadev.sim.map.Coordinates;
+import com.dmadev.sim.constants.EntityType;
+import com.dmadev.sim.gameMap.Coordinates;
 
 
 public final class Herbivore extends Creature {
@@ -10,8 +10,4 @@ public final class Herbivore extends Creature {
         super(EntityType.HERBIVORE, coordinates);
     }
 
-
-    //Травоядное, наследуется от Creature.
-    // Стремятся найти ресурс (траву),
-    // может потратить свой ход на движение в сторону травы, либо на её поглощение.
 }
